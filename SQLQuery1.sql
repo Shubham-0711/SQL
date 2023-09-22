@@ -304,3 +304,272 @@ fetch next 1 rows only
 select *from EMP_1 order by id desc
 offset 2 rows
 fetch next 2 rows only
+--------------------------------------------------------------------------------------
+
+-----------------------------------------joins------------------------------------------------------
+drop table DEP
+create table DEP
+(
+did int primary key,
+dname varchar(20)
+)
+
+insert into DEP values	(101,'HR'),(102,'Admin'),(103,'Development'),
+(104,'Testing')
+
+alter table EMP_1 add did int
+alter table EMP_1 add constraint pk_FK_DEP_emp 
+foreign key(did) references DEP(did)
+
+
+update EMP_1 set did=101 where id in(1,13) 
+update EMP_1 set did=102 where id in(2,3) 
+update EMP_1 set did=103 where id in(3,4,5,6,7,8) 
+update EMP_1 set did=104 where id in(9,10) 
+update EMP_1 set did=105 where id in(11,12) 
+
+select *from EMP_1
+select*from DEP
+							--------------- INNER JOIN -----------------
+
+select e.*,d.dname
+from EMP_1 e
+inner join DEP d on d.did=e.did 
+
+select e.*,
+
+							--------------------CROSS JOIN-------------------------
+
+							                    ---------------------Self Join---------------------
+
+select e1.name as 'Earn High ',e1.salary ,e2.name as 'Earn Less' ,e2.salary 
+from EMP_1 e1,EMP_1 e2
+where e1.salary>e2.salary
+
+
+alter table EMP_1 add managerid int -- ALTERING THE EMP TABLE 
+select*from EMP_1
+
+update EMP_1 set managerid =4 where id in (1,2,3)
+update EMP_1 set managerid =5 where id in (6,7,8,9)
+update EMP_1 set managerid =9 where id in (10,11,12)
+
+
+
+                             -------------------SELF JOIN --------------------
+select e1.name as 'Employee', e2.name as 'Manager'
+from EMP_1 e1,EMP_1 e2  --E1 AND E2 IS ALIS
+where e1.managerid=e2.id
+
+
+
+               
+
+
+
+
+			          ----------------------Cross Join----------------------
+
+					
+ create table color		-----------TABLE 1
+(id int primary key,
+color varchar(30)
+)
+insert into color (id,color) values
+(1,'RED'),
+(2,'white'),
+(3,'blue'),
+(4,'yellow'),
+(5,'green')
+
+ create table size		-----------TABLE 2
+(
+s_id int primary key,
+size varchar(10)
+)
+insert into size (s_id,size) values
+(1,'S'),
+(2,'M'),
+(3,'L'),
+(4,'X'),
+(5,'XL')
+
+select 
+
+select *from color cross join size ---syntax
+
+
+            ---------------------------------------------GROUP BY --------------------------------------------------
+select *from Prdt
+
+select p_name , count (p_name)as'Count Of Prd' from Prdt
+group by p_name 
+
+select*from EMP_1
+
+exec sp_help EMP_1
+select*from Student
+
+select id,count (id) as'Count of id' from EMP_1
+group by id
+
+
+
+
+select city,count(city) as'count of city' from EMP_1
+group by city
+
+select e_name,count (e_name) as 'coutn 'from EMP_1
+group by e_name
+
+
+select getdate()
+select 2023-22
+
+                      ----------------------- BUILT IN FUNCT ---------------------------------
+
+select*from EMP_1
+
+select name,len (name)from EMP_1---- to find lenght
+
+select UPPER(name)as 'Employee Name' from EMP_1  --for uppercase
+
+select LOWER(name)as 'Employee Name' from EMP_1 --for Lowercase
+
+select SUBSTRING(email,0,5)as 'Substring' from EMP_1 --to extract no of chars from given col
+
+select TRIM(name)from EMP_1--removing leading and trailing space
+
+select LTRIM(name)from EMP_1--remove the spaces from left side
+
+select RTRIM(name)from EMP_1--remove the space from right side
+
+select replace(name,'@','#')from EMP_1 --conversion from one type to another dat type 
+
+select CONCAT(name,'-->',email,'-->',email)from EMP_1--
+
+select cast(salary as varchar(20))as 'String Salary 'from EMP_1
+
+--year,month,day ---extract the year or month or day from the date 
+select cast(getdate()as time) from EMP_1
+select year (cast(getdate()as date))
+select month (cast (getdate ()as date))
+select day (cast (getdate()as date )) 
+
+select name,age,year(cast(getdate()as date)) from EMP_1
+
+
+
+											---------------------Views--------------------------
+
+----to create 
+create view name_shubham as
+select *from EMP_1 WHERE name='shubham'
+
+---To Run view 
+select*from name_shubham
+
+----adding new view
+create view info as
+select name,age,salary from EMP_1 where id
+=(select did from DEP dname='HR')
+
+select *from DEP
+
+
+
+------------------------------- STORED PROCEDURE -----------------------------
+create proc sp_emp
+as begin
+select*from EMP_1
+return 
+end 
+
+--- to call sp
+exec sp_emp
+
+---with parameters
+--create Procedure
+     --or--
+create proc sp_emp_City(@City varchar(10))
+as begin 
+select*from EMP_1 where age=22
+return 
+end
+
+exec sp_emp_City
+@city='Pune'
+
+--------------------------------------DML
+create proc sp_insert_emp
+(
+@id int,
+@name varchar(30),
+@Email varchar(30),
+@age int,
+@sal numeric(12,2),
+@city varchar(30),
+@did int,
+@mid int
+)
+as begin 
+insert into EMP_1 values(@id,@name,@Email,@age,@sal,@city,@did,@mid) 
+return
+end
+
+------UPDATE 
+create proc sp_ins_emp
+(
+@id int,
+@name varchar(30),
+@Email varchar(30),
+@age int,
+@sal numeric(12,2),
+@city varchar(30),
+@did int,
+@mid int
+)
+as begin 
+update EMP_1 set
+id=@id,name=@name,email=@Email,age=@age,salary=@sal,
+city=@city,did=@did,managerid=@mid where id=@id
+return
+end
+
+exec sp_ins_emp
+@id=12,
+@name='Test2',
+@email='test@gmail.com',
+@age=23,
+@sal=34567.45,
+@city='Pune',
+@did=103,
+@mid=4
+
+
+
+
+
+
+select *from EMP_1
+
+
+
+
+
+
+----------------------------IDENTITY KEY--------------------------------
+
+create table Prod
+(
+id int primary key identity(101,1),
+name varchar(20),
+price int
+)
+
+insert into Prod values('Pencil',20)
+insert into Prod values('Pen',50)
+insert into Prod values('Pendrive',500)
+select * from Prod
+
+
