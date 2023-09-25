@@ -367,7 +367,6 @@ where e1.managerid=e2.id
 
 
 
-
 			          ----------------------Cross Join----------------------
 
 					
@@ -548,14 +547,7 @@ exec sp_ins_emp
 
 
 
-
-
-
 select *from EMP_1
-
-
-
-
 
 
 ----------------------------IDENTITY KEY--------------------------------
@@ -573,3 +565,54 @@ insert into Prod values('Pendrive',500)
 select * from Prod
 
 
+-----------------------------------------BUILT IN FUNC---------------------------------------
+--addition of 2 no 
+create function addition (@a int,@b int)
+returns int
+as begin 
+declare @c int --declare variable
+-- code to exe
+set @c=@a+@b
+return @c
+end 
+
+--called method
+--  DBO -database object
+select dbo.addition(10,20)as'sum'
+
+--scalar function
+
+create function GetEmpName(@id int)
+returns varchar(20)
+as begin
+return( select name from Employee where id=@id)
+end
+
+select dbo.GetEmpName(1) as 'Emp name'
+
+
+-- multi value function begin & end keyword not need to write
+
+create function GetEmpByDept(@did int)
+
+returns table
+as
+return (select * from Employee where did=@did)
+
+
+select * from dbo.GetEmpByDept(103)
+
+select*from Prdt
+------_________-----------------------------------------------------------------------------------
+
+--create function to accept the product price and give 10% disc. and return disc price 
+create function getDiscount (@p_price int)
+returns decimal
+as begin
+declare @d_price decimal
+set @d_price=@p_price-(@p_price*0.10)
+return @d_price
+end
+
+
+select p_price ,dbo.getDiscount(p_price)as 'Discount Price' from Prdt

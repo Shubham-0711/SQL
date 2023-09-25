@@ -65,10 +65,6 @@ select*
 --14.	Delete all the records from the Customers table where the Country value is 'Norway'.
 delete customers where country='Norway'
 
-
-
-
-create ta
 --15.	Use the MIN function to select the record with the smallest value of the Price column.
 
 --16.	Use an SQL function to select the record with the highest value of the Price column.
