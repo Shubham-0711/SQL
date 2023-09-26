@@ -77,7 +77,7 @@ select distinct DEPARTMENT from Worker
 Select substring(FIRST_NAME,1,3) from Worker;
 
 --Q-5. Write an SQL query to find the position of the alphabet (‘a’) in the first name column ‘Amitabh’ from the Worker table.
-
+select CHARINDEX('a',FIRST_NAME) from Worker where FIRST_NAME='Amitabh'
 
 --Q-6. Write an SQL query to print the FIRST_NAME from the Worker table after removing white spaces from the right side.
 select RTRIM(FIRST_NAME) from Worker  
@@ -131,10 +131,8 @@ select *from Worker where year (JOINING_DATE) = '2014'and MONTH(JOINING_DATE)='0
 select count (*)from Worker where department like 'Admin'
 
 --Q-22. Write an SQL query to fetch worker names with salaries >= 50000 and <= 100000.
-select CONCAT (FIRST_NAME,'',LAST_NAME) as 'Worker Name'
-from Worker
-where Worker
-
+select FIRST_NAME  from Worker where SALARY>= 50000 and SALARY<= 100000
+									--OR--
 SELECT CONCAT(FIRST_NAME, ' ', LAST_NAME) As Worker_Name, Salary
 FROM worker 
 WHERE WORKER_ID IN 
@@ -143,14 +141,13 @@ WHERE Salary BETWEEN 50000 AND 100000)
 
 
 --Q-23. Write an SQL query to fetch the no. of workers for each department in descending order.
-select department ,count(WORKER_ID) as workers  
-from Worker
+select department ,count(WORKER_ID) as workers from Worker
 group by DEPARTMENT
 order by workers desc
 
 --Q-24. Write an SQL query to print details of the Workers who are also Managers.
 select concat(w.FIRST_NAME,' ',LAST_NAME)as 'Worker Name',t.WORKER_TITLE
-from Worker w inner join Title t
+from Worker w inner join Title t0
 on w.WORKER_ID=t.WORKER_REF_ID
 where WORKER_TITLE ='Manager'
 
@@ -169,6 +166,7 @@ from worker
 --Q-28. Write an SQL query to clone a new table from another table.
 SELECT * INTO WorkerClone FROM Worker
 
+create table workercopy as select *from Worker
 
 --Q-29. Write an SQL query to fetch intersecting records of two tables.
 select * from worker

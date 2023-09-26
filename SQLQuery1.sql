@@ -487,6 +487,19 @@ end
 --- to call sp
 exec sp_emp
 
+create Proc Mypro
+@num1 int,
+@num2 int ,
+@result int output
+as begin 
+set @result =@num1 +@num2
+end
+go
+declare @ans int 
+exec Mypro @num1=12,@num2=8,@result =@ans output
+select @ans as addition 
+
+
 ---with parameters
 --create Procedure
      --or--
@@ -616,3 +629,119 @@ end
 
 
 select p_price ,dbo.getDiscount(p_price)as 'Discount Price' from Prdt
+
+
+--------------------------------------------------- TRIGGERS ----------------------------------------
+
+create table EMPTrack
+(
+id int primary key identity (1,1),
+description varchar (200)
+)
+select*from EMPTrack
+select*from EMP_1
+
+create trigger tr_EMP_1
+on EMP_1 after insert 
+as begin 
+declare @id int
+declare @name varchar(30)
+declare @email varchar(30)
+select @id=id,@name=name,@email=email from inserted
+insert into EMPTrack values('new record with details'+CAST(@id as varchar)
++'name'+@name+'email'+@email+'Date'+CAST(GETDATE()as varchar(30))+'Added')
+end
+
+insert into EMP_1 (id,name,email,age,salary,city,did,managerid)values 
+(150,'Sachin ','sachin@gmail.com',25,250000,'Pune',101,5)
+
+select*from EMP_1
+select*from EMPTrack
+
+create trigger tr_EMP_1_delete
+on EMP_1 after insert 
+as begin 
+declare @id int
+declare @name varchar(30)
+declare @email varchar(30)
+select @id=id,@name=name,@email=email from deleted
+insert into EMPTrack values('new record with details'+CAST(@id as varchar)
++'name'+@name+'email'+@email+'Date'+CAST(GETDATE()as varchar(30))+'Removed')
+end
+
+
+
+
+----------------------------CASE EXPRESSION --------------------------
+--Case expressions are used in the sql to add certain conditions, based on condition you want to display true or false value
+
+
+--Case
+
+--     When  conditio1  then ‘true statment1’
+--     When  condition2 then ‘ true statement2’
+--     Else ‘false stamtment’
+--end
+select *from Product
+
+select Price,P_name,
+case 
+when Price<50000 then 'NOT EXPENSIVE'
+when Price>50000 then 'EXPENSIVE'
+else'AVERAGE'
+end As 'Remark'
+from Product
+
+
+select*from EMP_1
+
+select salary,
+case
+when salary <40 and salary >90 then 'High Salary'
+when salary <25 and salary >40 then 'Average'
+else 'Salary Is Low'
+end as 'Salary'
+from EMP_1
+
+
+create table Customer
+(
+id int ,
+name varchar (30),
+city varchar (30),
+State varchar(30)
+
+)
+insert into Customer (id,name,city,State)values
+(1,'suresh','Pune','MH'),
+(2,'sandesh','Nagpur','MH'),
+(3,'Akash','Pune','MH'),
+(4,'Riya','Solapur','MH'),
+(5,'Tanuja','Satara','MH')
+
+create table Supplier 
+(
+id int,
+name varchar(30),
+city varchar (30),
+State varchar (30)
+)
+insert into Customer (id,name,city,State)values
+(1,'suresh','Pune','MH'),
+(2,'sandesh','Nagpur','MH'),
+(3,'Akash','Pune','MH'),
+(4,'Riya','Solapur','MH'),
+(5,'Tanuja','Satara','MH')
+
+
+
+
+Select name,city,state from customer
+Union
+Select name,city,state from supplier
+
+
+Select name,city,state from customer
+Union all
+Select name,city,state from supplier
+
